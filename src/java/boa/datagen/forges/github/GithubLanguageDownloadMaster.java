@@ -31,6 +31,10 @@ public class GithubLanguageDownloadMaster {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
+      /*  outputDir = new File(output + "/other");
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }  */
     }
 
     public static void main(String[] args){

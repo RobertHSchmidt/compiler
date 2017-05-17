@@ -24,18 +24,22 @@ public class RepositoryCloner {
     private static  String REMOTE_URL = "";
     private HttpURLConnection connection = null;
 
-    
+    /**
+     * extracts url's from files in input directory and clones those repositories into the output directory
+     * @param input repo name directory
+     * @param output directory to store cloned repositories
+     * @throws InvalidRemoteException
+     * @throws TransportException
+     * @throws IOException
+     * @throws GitAPIException
+     */
     public static void clone(String input, String output) throws InvalidRemoteException, TransportException, IOException, GitAPIException{
     File in;
-   // TokenList tokens = new TokenList(tokenFile);
-   // Token tok = null;
-   // File out = new File(output);
     String urlHeader = "https://github.com/";
     String urlFooter = ".git";
     String outFilePath= output;
     String name = "";
     String nameAndValue[];
-    int pageNumber;
     Scanner sc = null;
     File dir = new File(input);
     if (!dir.exists())
@@ -44,7 +48,7 @@ public class RepositoryCloner {
     
     
     for(int i = 0; i < files.length ; i++){
-    	System.out.println("proccesing file number " + i );
+    //	System.out.println("Processing file number " + i );
     	in = files[i];
     	try {		
     		sc = new Scanner(in);
@@ -56,21 +60,17 @@ public class RepositoryCloner {
     	sc.useDelimiter(",");
     	while(sc.hasNext()){
     		name = sc.next();
-    	//	System.out.println(name);
     		nameAndValue = name.split(":");
-    		String keyw = nameAndValue[0].substring(1, nameAndValue[0].length()-1) ;//name.substring(1, 10);
-    	//	System.out.println("keyword: " + keyw);
+    		String keyw = nameAndValue[0].substring(1, nameAndValue[0].length()-1) ;
     		if(keyw.equals("full_name") ){
-    			//sc.next();
     			name = nameAndValue[1].substring(1, nameAndValue[1].length() - 1);
     			outFilePath = output + "/" + name ; 
     			System.out.println("url: "+ urlHeader + name + urlFooter);
-    			//tok = tokens.getNextAuthenticToken(urlHeader + name + urlFooter);
     			 String[] args = { urlHeader + name + urlFooter, outFilePath};
     			 clone(args);
     		}
     	} 
-    	System.out.println("finished file " + i );
+    //	System.out.println("finished file " + i );
     }
     } 
     

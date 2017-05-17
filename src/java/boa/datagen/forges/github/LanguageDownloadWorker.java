@@ -25,6 +25,7 @@ public class LanguageDownloadWorker implements Runnable{
 	JSONArray jsrepos;
 	JSONArray phprepos;
 	JSONArray scalarepos;
+//  JSONArray otherrepos;	
 	String language_url_header = "https://api.github.com/repos/";
 	String language_url_footer = "/languages";
 	int javaCounter = 1;
@@ -44,6 +45,7 @@ public class LanguageDownloadWorker implements Runnable{
 		this.jsrepos = new JSONArray();
 		this.phprepos = new JSONArray();
 		this.scalarepos = new JSONArray();
+	//	this.otherrepos = new JSONArray();
 		this.startFileNumber = start;
 		this.endFileNumber = end;
 	}
@@ -195,6 +197,14 @@ public class LanguageDownloadWorker implements Runnable{
                 this.scalarepos = new JSONArray();
 			}
 		} else {
+		/*	this.otherrepos.put(this.otherrepos.length(), repo);
+			if (this.otherrepos.length() % RECORDS_PER_FILE == 0) {
+				fileToWriteJson = new File(output + "/other/Thread- "+ Thread.currentThread().getId() + "-page-"  + otherCounter + ".json");
+				FileIO.writeFileContents(fileToWriteJson, this.otherrepos.toString());
+				System.out.println(Thread.currentThread().getId() + " other: " + otherCounter++);
+                this.otherrepos = new JSONArray();
+			}
+			*/
 			this.other++;
 		}
 	}
@@ -220,7 +230,12 @@ public class LanguageDownloadWorker implements Runnable{
 			fileToWriteJson = new File(output + "/scala/Thread- "+ Thread.currentThread().getId() + "-page-" + scalaCounter + ".json");
 			FileIO.writeFileContents(fileToWriteJson, this.scalarepos.toString());
 			System.out.println(Thread.currentThread().getId() + " scala:  " + scalaCounter++);
-		}
+		} /* else{
+			fileToWriteJson = new File(output + "/other/Thread- "+ Thread.currentThread().getId() + "-page-" + otherCounter + ".json");
+			FileIO.writeFileContents(fileToWriteJson, this.otherrepos.toString());
+			System.out.println(Thread.currentThread().getId() + " other:  " + scalaCounter++);
+		} */
+		
 		System.out.println("Thread- "+ Thread.currentThread().getId() + " others: " + this.other);
 	}
 
