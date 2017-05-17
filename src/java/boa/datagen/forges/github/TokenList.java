@@ -35,7 +35,7 @@ public class TokenList {
             if(mc.authenticate()) {
                 if(this.lastUsedToken != tokenNumber){
                     this.lastUsedToken = tokenNumber;
-                    System.out.print("now using token: "+ tokenNumber);
+                    System.out.println("now using token: "+ tokenNumber);
                 }
                 return token;
             }

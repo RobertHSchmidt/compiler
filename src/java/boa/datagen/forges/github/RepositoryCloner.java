@@ -22,7 +22,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 public class RepositoryCloner {
 
     private static  String REMOTE_URL = "";
-    private HttpURLConnection connection = null;
+  //  private HttpURLConnection connection = null;
 
     /**
      * extracts url's from files in input directory and clones those repositories into the output directory
