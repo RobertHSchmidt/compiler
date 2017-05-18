@@ -104,7 +104,23 @@ public class RepositoryCloner {
     public static void main(String[] args) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
       String input = args[0];
       String output= args[1];
-      clone(input, output);
+      String tf = args[3];
+      int totalFiles = Integer.parseInt(tf);
+      final int MAX_NUM_THREADS = 3;
+      
+      int shareSize = totalFiles/MAX_NUM_THREADS;
+      int start = 0;
+      int end = 0;
+      for(int i = 0 ; i < MAX_NUM_THREADS-1; i++){
+          start = end + 1;
+          end = start + shareSize;
+          RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);
+          new Thread(worker).start();
+      }
+      start = end + 1; end = totalFiles;
+      RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);
+      new Thread(worker).start();
+      // clone(input, output);
     	
     	
     	/*
