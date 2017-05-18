@@ -104,7 +104,8 @@ public class RepositoryCloner {
     public static void main(String[] args) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
       String input = args[0];
       String output= args[1];
-      String tf = args[3];
+      String tf = args[2];
+      
       int totalFiles = Integer.parseInt(tf);
       final int MAX_NUM_THREADS = 3;
       
@@ -120,7 +121,8 @@ public class RepositoryCloner {
       start = end + 1; end = totalFiles;
       RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);
       new Thread(worker).start();
-      // clone(input, output);
+      
+     // clone(input, output);
     	
     	
     	/*

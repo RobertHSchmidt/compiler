@@ -35,7 +35,7 @@ public class RepositoryClonerWorker implements Runnable{
 		    File dir = new File(inPath);
 		    File[] files = dir.listFiles();
 		    
-		    for(int i = from - 1; i < to - 1 ; i++){
+		    for(int i = (from - 1); i < to ; i++){
 		    //	System.out.println("Processing file number " + i );
 		    	in = files[i];
 		    	try {		
@@ -53,7 +53,7 @@ public class RepositoryClonerWorker implements Runnable{
 		    		if(keyw.equals("full_name") ){
 		    			name = nameAndValue[1].substring(1, nameAndValue[1].length() - 1);
 		    			outFilePath = outPath + "/" + name ; 
-		    			System.out.println("url: "+ urlHeader + name + urlFooter);
+		    			System.out.println("Thread-" + Thread.currentThread().getId() + "handling :" + "url: "+ urlHeader + name + urlFooter);
 		    			 String[] args = { urlHeader + name + urlFooter, outFilePath};
 		    			 RepositoryCloner.clone(args);
 		    		}
