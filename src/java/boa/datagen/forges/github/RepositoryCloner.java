@@ -48,7 +48,7 @@ public class RepositoryCloner {
     
     
     for(int i = 0; i < files.length ; i++){
-    //	System.out.println("Processing file number " + i );
+    	System.out.println("Processing file number " + i );
     	in = files[i];
     	try {		
     		sc = new Scanner(in);
@@ -70,7 +70,7 @@ public class RepositoryCloner {
     			 clone(args);
     		}
     	} 
-    //	System.out.println("finished file " + i );
+    	System.out.println("finished file " + i );
     }
     } 
     
@@ -106,6 +106,7 @@ public class RepositoryCloner {
       String output= args[1];
       String tf = args[2];
       
+      
       int totalFiles = Integer.parseInt(tf);
       final int MAX_NUM_THREADS = 3;
       
@@ -113,12 +114,12 @@ public class RepositoryCloner {
       int start = 0;
       int end = 0;
       for(int i = 0 ; i < MAX_NUM_THREADS-1; i++){
-          start = end + 1;
+          start = end;
           end = start + shareSize;
           RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);
           new Thread(worker).start();
       }
-      start = end + 1; end = totalFiles;
+      start = end; end = totalFiles;
       RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);
       new Thread(worker).start();
       

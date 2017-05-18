@@ -42,7 +42,7 @@ public class GithubLanguageDownloadMaster {
             throw new IllegalArgumentException();
         }
         GithubLanguageDownloadMaster master = new GithubLanguageDownloadMaster(args[0], args[1], args[2]);
-        master.orchastrate(12);
+        master.orchastrate(542058);
     }
 
     public void orchastrate(int totalFies){

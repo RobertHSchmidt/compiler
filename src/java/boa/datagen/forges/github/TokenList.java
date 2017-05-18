@@ -14,6 +14,10 @@ public class TokenList {
     private int lastUsedToken = 0;
     public PriorityQueue<Token> tokens = new PriorityQueue<Token>();
 
+    public int size(){
+    	return tokens.size();
+    }
+    
     public TokenList(String path) {
         String tokenDetails = FileIO.readFileContents(new File(path));
         String[] allTokens = tokenDetails.split("\n");

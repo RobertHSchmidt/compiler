@@ -9,6 +9,13 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import boa.datagen.util.FileIO;
+
 
 
 
@@ -35,8 +42,9 @@ public class RepositoryClonerWorker implements Runnable{
 		    File dir = new File(inPath);
 		    File[] files = dir.listFiles();
 		    
-		    for(int i = (from - 1); i < to ; i++){
+		    for(int i = from ; i < to  ; i++){
 		    //	System.out.println("Processing file number " + i );
+		    	
 		    	in = files[i];
 		    	try {		
 		    		sc = new Scanner(in);
@@ -45,6 +53,7 @@ public class RepositoryClonerWorker implements Runnable{
 		    		System.out.println(inPath +" file not found");
 		    		e.printStackTrace();
 		    	}
+		    
 		    	sc.useDelimiter(",");
 		    	while(sc.hasNext()){
 		    		name = sc.next();
@@ -57,10 +66,25 @@ public class RepositoryClonerWorker implements Runnable{
 		    			 String[] args = { urlHeader + name + urlFooter, outFilePath};
 		    			 RepositoryCloner.clone(args);
 		    		}
-		    	} 
+		    	}
+		    }
+		    		
+		    	/*
+		    	String content = FileIO.readFileContents(files[i]);
+				Gson parser = new Gson();
+				JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
+				for(int j = 0; j < repos.size(); j++){
+					JsonObject repo = repos.get(j).getAsJsonObject();
+					name = repo.get("full_name").getAsString();
+					outFilePath = outPath + "/" + name ; 
+	    			System.out.println("Thread-" + Thread.currentThread().getId() + "handling :" + "url: "+ urlHeader + name + urlFooter);
+	    			String[] args = { urlHeader + name + urlFooter, outFilePath};
+	    			RepositoryCloner.clone(args);
+					}
+		    	}  */
 		    //	System.out.println("finished file " + i );
 		    }
-}
+
 
 	@Override
 	public void run() {

@@ -99,6 +99,8 @@ public class Token implements Comparable{
         long time = (this.getResetTime()*1000) - System.currentTimeMillis();
         System.out.println("Waiting for limit for token number: "+ this.getId() +"reset in " + (time / 1000 + 1) + "s");
         Timer timer = new Timer();
+        if(time <= 0 )
+        	time = 1;
         timer.schedule(new UnAvailableToken(this, list), time);
     }
 
