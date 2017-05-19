@@ -91,7 +91,7 @@ public class Token implements Comparable<Token> {
 
 	public void reset(TokenList list) {
 		this.thread_id = -1;
-		long time = (this.getResetTime() * 1000) - System.currentTimeMillis();
+		long time = (this.getResetTime() + 1) * 1000 - System.currentTimeMillis();
 		if (time <= 0)
 			time = 0;
 		System.out

@@ -45,19 +45,20 @@ public class TokenList {
 	}
 
 	public synchronized Token getAuthenticatedToken(long threadId) {
-		Token tok = this.tokens.peek();
-		if (this.tokens.size() <= 0) {
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		while (true) {
+			Token tok = this.tokens.poll();
+			if (tok == null) {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(threadId + " using : " + tok.getId());
+				tok.setThread_id(threadId);
+				return tok;
 			}
-			return getAuthenticatedToken(threadId);
 		}
-		System.out.println(threadId + " using : " + tok.getId());
-		tok.setThread_id(threadId);
-		this.tokens.remove(tok);
-		return tok;
 	}
 
 	public synchronized void removeToken(Token tok) {
