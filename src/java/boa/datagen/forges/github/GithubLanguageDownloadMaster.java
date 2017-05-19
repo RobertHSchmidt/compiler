@@ -1,6 +1,7 @@
 package boa.datagen.forges.github;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by nmtiwari on 9/19/16.
@@ -9,7 +10,7 @@ public class GithubLanguageDownloadMaster {
     public final String repoNameDir;
     public final String langNameDir;
     public final String tokenFile;
-    public final static int MAX_NUM_THREADS = 3;
+    public final static int MAX_NUM_THREADS = 1;
 
     public GithubLanguageDownloadMaster(String input, String output, String tokenFile){
         this.repoNameDir = input;
@@ -37,7 +38,7 @@ public class GithubLanguageDownloadMaster {
         }  
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         if (args.length < 3) {
             throw new IllegalArgumentException();
         }
