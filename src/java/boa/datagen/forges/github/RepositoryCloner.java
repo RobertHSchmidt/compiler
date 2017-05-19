@@ -113,7 +113,8 @@ public class RepositoryCloner {
       int shareSize = totalFiles/MAX_NUM_THREADS;
       int start = 0;
       int end = 0;
-      for(int i = 0 ; i < MAX_NUM_THREADS-1; i++){
+      int i;
+      for(i = 0; i < MAX_NUM_THREADS-1; i++){
           start = end;
           end = start + shareSize;
           RepositoryClonerWorker worker = new RepositoryClonerWorker(output, input, start, end);

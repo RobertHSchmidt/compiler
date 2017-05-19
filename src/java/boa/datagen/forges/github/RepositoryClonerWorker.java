@@ -20,8 +20,8 @@ import boa.datagen.util.FileIO;
 
 
 public class RepositoryClonerWorker implements Runnable{
-	private static String outPath = "";
-	private static String inPath = "";
+	private String outPath = "";
+	private String inPath = "";
 	private int from, to;
 	
 	public RepositoryClonerWorker(String out, String in, int from, int to){
@@ -31,7 +31,7 @@ public class RepositoryClonerWorker implements Runnable{
 		this.to = to;
 	}
 	
-	  public static void clone(int from, int to) throws InvalidRemoteException, TransportException, IOException, GitAPIException{
+	  public void clone(int from, int to) throws InvalidRemoteException, TransportException, IOException, GitAPIException{
 		    File in;
 		    String urlHeader = "https://github.com/";
 		    String urlFooter = ".git";
@@ -41,10 +41,8 @@ public class RepositoryClonerWorker implements Runnable{
 		    Scanner sc = null;
 		    File dir = new File(inPath);
 		    File[] files = dir.listFiles();
-		    
 		    for(int i = from ; i < to  ; i++){
 		    //	System.out.println("Processing file number " + i );
-		    	
 		    	in = files[i];
 		    	try {		
 		    		sc = new Scanner(in);
@@ -61,10 +59,13 @@ public class RepositoryClonerWorker implements Runnable{
 		    		String keyw = nameAndValue[0].substring(1, nameAndValue[0].length()-1) ;
 		    		if(keyw.equals("full_name") ){
 		    			name = nameAndValue[1].substring(1, nameAndValue[1].length() - 1);
-		    			outFilePath = outPath + "/" + name ; 
+		    			outFilePath = outPath + "/" + name ;
+		    			File outFile = new File(outFilePath);
+		    			if(!outFile.exists()){
 		    			System.out.println("Thread-" + Thread.currentThread().getId() + "handling :" + "url: "+ urlHeader + name + urlFooter);
 		    			 String[] args = { urlHeader + name + urlFooter, outFilePath};
 		    			 RepositoryCloner.clone(args);
+		    			}
 		    		}
 		    	}
 		    }
