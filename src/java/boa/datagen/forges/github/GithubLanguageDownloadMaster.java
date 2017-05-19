@@ -42,15 +42,15 @@ public class GithubLanguageDownloadMaster {
             throw new IllegalArgumentException();
         }
         GithubLanguageDownloadMaster master = new GithubLanguageDownloadMaster(args[0], args[1], args[2]);
-        master.orchastrate(542058);
+        master.orchastrate(new File(master.repoNameDir).listFiles().length);
     }
 
     public void orchastrate(int totalFies){
-        int shareSize = totalFies/this.MAX_NUM_THREADS;
+        int shareSize = totalFies/MAX_NUM_THREADS;
         int start = 0;
         int end = 0;
         TokenList tokens = new TokenList(this.tokenFile);
-        for(int i = 0 ; i < this.MAX_NUM_THREADS-1; i++){
+        for(int i = 0 ; i < MAX_NUM_THREADS-1; i++){
             start = end + 1;
             end = start + shareSize;
             LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
