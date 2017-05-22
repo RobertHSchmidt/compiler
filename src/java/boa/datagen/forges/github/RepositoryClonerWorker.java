@@ -62,9 +62,10 @@ public class RepositoryClonerWorker implements Runnable{
 		    			outFilePath = outPath + "/" + name ;
 		    			File outFile = new File(outFilePath);
 		    			if(!outFile.exists()){
-		    			System.out.println("Thread-" + Thread.currentThread().getId() + "handling :" + "url: "+ urlHeader + name + urlFooter);
-		    			 String[] args = { urlHeader + name + urlFooter, outFilePath};
-		    			 RepositoryCloner.clone(args);
+		    				System.out.println("Thread-" + Thread.currentThread().getId() +
+		    						"handling :" + "url: "+ urlHeader + name + urlFooter);
+		    				String[] args = { urlHeader + name + urlFooter, outFilePath};
+		    				RepositoryCloner.clone(args);
 		    			}
 		    		}
 		    	}

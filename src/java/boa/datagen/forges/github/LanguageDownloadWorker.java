@@ -61,7 +61,7 @@ public class LanguageDownloadWorker implements Runnable {
 		String fileHeader = this.repository_location + "/page-";
 		String fileFooter = ".json";
 		int pageNumber = from;
-		Token tok = this.tokens.getAuthenticatedToken(Thread.currentThread().getId());
+		Token tok = this.tokens.getNextAuthenticToken("https://api.github.com/repositories");
 		while (pageNumber <= to) {
 			File repoFile = new File(fileHeader + pageNumber + fileFooter);
 			String content = FileIO.readFileContents(repoFile);
@@ -71,11 +71,10 @@ public class LanguageDownloadWorker implements Runnable {
 			int size = repos.size();
 			for (int i = 0; i < size; i++) {
 				JsonObject repo = repos.get(i).getAsJsonObject();
-				String langurl = this.language_url_header + repo.get("full_name").getAsString() + this.language_url_footer;
+				String langurl = this.language_url_header + repo.get("full_name").getAsString()
+						+ this.language_url_footer;
 				if (tok.getNumberOfRemainingLimit() <= 0) {
-					System.out.println(Thread.currentThread().getId() + " freeing : " + tok.getId());
-					tok.reset(this.tokens);
-					tok = this.tokens.getAuthenticatedToken(Thread.currentThread().getId());
+					tok = this.tokens.getNextAuthenticToken(langurl);
 				}
 				mc = new MetadataCacher(langurl, tok.getUserName(), tok.getToken());
 				boolean authnticationResult = mc.authenticate();
@@ -90,16 +89,14 @@ public class LanguageDownloadWorker implements Runnable {
 				} else {
 					final int responsecode = mc.getResponseCode();
 					System.err.println("authntication error " + responsecode);
-					if (responsecode / 100 == 4) {
-						mc = new MetadataCacher( "https://api.github.com/repositories?since=" + 0, tok.getUserName(), tok.getToken());
-						if(mc.authenticate()){ // if authenticate doesn't pass then token is exhausted.
+					mc = new MetadataCacher("https://api.github.com/repositories", tok.getUserName(), tok.getToken());
+					if (mc.authenticate()) { // if authenticate doesn't pass
+												// then token is exhausted.
 						tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());
-						}else{
-							System.out.println("token: " + tok.getId() + " exhausted"); 
-							tok.setnumberOfRemainingLimit(0);
-							i--;
-						}
-						//continue;
+					} else {
+						System.out.println("token: " + tok.getId() + " exhausted");
+						tok.setnumberOfRemainingLimit(0);
+						i--;
 					}
 				}
 			}

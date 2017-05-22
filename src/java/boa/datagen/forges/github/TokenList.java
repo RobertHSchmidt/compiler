@@ -3,11 +3,12 @@ package boa.datagen.forges.github;
 import boa.datagen.util.FileIO;
 
 import java.io.File;
+import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class TokenList {
 	private int lastUsedToken = 0;
-	public PriorityBlockingQueue<Token> tokens = new PriorityBlockingQueue<Token>();
+	public PriorityQueue<Token> tokens = new PriorityQueue<Token>();
 
 	public int size() {
 		return tokens.size();
@@ -27,21 +28,27 @@ public class TokenList {
 
 	public Token getNextAuthenticToken(String url) {
 		MetadataCacher mc = null;
-		int tokenNumber = 0;
-
-		for (Token token : tokens) {
-			System.out.println("Trying token: " + tokenNumber);
-			mc = new MetadataCacher(url, token.getUserName(), token.getToken());
-			if (mc.authenticate()) {
-				if (this.lastUsedToken != tokenNumber) {
-					this.lastUsedToken = tokenNumber;
-					System.out.println("now using token: " + tokenNumber);
+		while (true) {
+			for (Token token : tokens) {
+				System.out.println("Trying token: " + token.getId());
+				mc = new MetadataCacher(url, token.getUserName(), token.getToken());
+				if (mc.authenticate()) {
+					if (this.lastUsedToken != token.getId()) {
+						this.lastUsedToken = token.getId();
+						System.out.println("now using token: " + token.getId());
+					}
+					return token;
 				}
-				return token;
 			}
-			tokenNumber++;
+			try {
+				System.out.println("waiting for token, going to sleep for 10s");
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		throw new IllegalArgumentException();
+
+		// throw new IllegalArgumentException();
 	}
 
 	public synchronized Token getAuthenticatedToken(long threadId) {
@@ -49,6 +56,7 @@ public class TokenList {
 			Token tok = this.tokens.poll();
 			if (tok == null) {
 				try {
+					System.out.println("thread-" + threadId + " going to sleep for 10s");
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();

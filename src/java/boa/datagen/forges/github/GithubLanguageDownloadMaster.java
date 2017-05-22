@@ -10,7 +10,7 @@ public class GithubLanguageDownloadMaster {
     public final String repoNameDir;
     public final String langNameDir;
     public final String tokenFile;
-    public final static int MAX_NUM_THREADS = 1;
+    public final static int MAX_NUM_THREADS = 3;
 
     public GithubLanguageDownloadMaster(String input, String output, String tokenFile){
         this.repoNameDir = input;

@@ -85,7 +85,9 @@ public class Token implements Comparable<Token> {
 
 		@Override
 		public void run() {
+			
 			list.addToken(this.token);
+			System.out.println("Token-" + token.getId() + " is available");
 		}
 	}
 
@@ -95,7 +97,7 @@ public class Token implements Comparable<Token> {
 		if (time <= 0)
 			time = 0;
 		System.out
-				.println("Waiting for limit for token number: " + this.getId() + "reset in " + (time / 1000 + 1) + "s");
+				.println("Waiting for limit for token number: " + this.getId() + " reset in " + (time / 1000) + "s");
 		Timer timer = new Timer();
 		timer.schedule(new UnAvailableToken(this, list), time);
 	}
