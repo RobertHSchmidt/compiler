@@ -74,7 +74,7 @@ public class LanguageDownloadWorker implements Runnable {
 				String langurl = this.language_url_header + repo.get("full_name").getAsString()
 						+ this.language_url_footer;
 				if (tok.getNumberOfRemainingLimit() <= 0) {
-					tok = this.tokens.getNextAuthenticToken(langurl);
+					tok = this.tokens.getNextAuthenticToken("https://api.github.com/repositories");
 				}
 				mc = new MetadataCacher(langurl, tok.getUserName(), tok.getToken());
 				boolean authnticationResult = mc.authenticate();
