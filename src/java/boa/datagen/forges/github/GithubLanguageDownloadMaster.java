@@ -50,15 +50,16 @@ public class GithubLanguageDownloadMaster {
         int shareSize = totalFies/MAX_NUM_THREADS;
         int start = 0;
         int end = 0;
+        int i = 0;
         TokenList tokens = new TokenList(this.tokenFile);
-        for(int i = 0 ; i < MAX_NUM_THREADS-1; i++){
+        for(i = 0; i < MAX_NUM_THREADS-1; i++){
             start = end + 1;
             end = start + shareSize;
-            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
+            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end, i);
             new Thread(worker).start();
         }
         start = end + 1; end = totalFies;
-        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
+        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end, i);
         new Thread(worker).start();
     }
 }
