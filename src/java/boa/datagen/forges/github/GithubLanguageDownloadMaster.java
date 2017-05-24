@@ -2,6 +2,16 @@ package boa.datagen.forges.github;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import boa.datagen.util.FileIO;
 
 /**
  * Created by nmtiwari on 9/19/16.
@@ -11,6 +21,7 @@ public class GithubLanguageDownloadMaster {
     public final String langNameDir;
     public final String tokenFile;
     public final static int MAX_NUM_THREADS = 3;
+    public static HashSet<String> names = new HashSet<String>();
 
     public GithubLanguageDownloadMaster(String input, String output, String tokenFile){
         this.repoNameDir = input;
@@ -19,23 +30,33 @@ public class GithubLanguageDownloadMaster {
         File outputDir = new File(output + "/java");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
+        }else{
+        	addNames(output + "/java");
         }
         outputDir = new File(output + "/js");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
+        }else{
+        	addNames(output + "/js");
         }
         outputDir = new File(output + "/php");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
+        }else{
+        	addNames(output + "/php");
         }
         outputDir = new File(output + "/scala");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
+        }else{
+        	addNames(output +"/scala");
         }
        outputDir = new File(output + "/other");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
-        }  
+        }else{
+        	addNames(output +"/other");
+        }
     }
 
     public static void main(String[] args) {
@@ -55,11 +76,27 @@ public class GithubLanguageDownloadMaster {
         for(i = 0; i < MAX_NUM_THREADS-1; i++){
             start = end + 1;
             end = start + shareSize;
-            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end, i);
+            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
             new Thread(worker).start();
         }
         start = end + 1; end = totalFies;
-        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end, i);
+        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
         new Thread(worker).start();
+    }
+
+    private void addNames(String filePath){
+    	System.out.println("adding " + filePath + " to names");
+    	File dir = new File(filePath);
+    	File[] files = dir.listFiles();
+    	for(int i = 0; i < files.length; i++){
+    		String content = FileIO.readFileContents(files[i]);
+    		Scanner sc = new Scanner(content);
+			Gson parser = new Gson();
+			JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
+			for(JsonElement repoE: repos){
+				JsonObject repo = repoE.getAsJsonObject();
+				names.add(repo.get("full_name").getAsString());
+			}
+    	}
     }
 }

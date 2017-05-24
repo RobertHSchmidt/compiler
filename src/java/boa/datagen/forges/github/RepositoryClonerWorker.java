@@ -51,27 +51,9 @@ public class RepositoryClonerWorker implements Runnable{
 		    		System.out.println(inPath +" file not found");
 		    		e.printStackTrace();
 		    	}
-		    
-		    	sc.useDelimiter(",");
-		    	while(sc.hasNext()){
-		    		name = sc.next();
-		    		nameAndValue = name.split(":");
-		    		String keyw = nameAndValue[0].substring(1, nameAndValue[0].length()-1) ;
-		    		if(keyw.equals("full_name") ){
-		    			name = nameAndValue[1].substring(1, nameAndValue[1].length() - 1);
-		    			outFilePath = outPath + "/" + name ;
-		    			File outFile = new File(outFilePath);
-		    			if(!outFile.exists()){
-		    				System.out.println("Thread-" + Thread.currentThread().getId() +
-		    						"handling :" + "url: "+ urlHeader + name + urlFooter);
-		    				String[] args = { urlHeader + name + urlFooter, outFilePath};
-		    				RepositoryCloner.clone(args);
-		    			}
-		    		}
+		    	if( !files[i].getName().endsWith(".json") ){
+		    		continue;
 		    	}
-		    }
-		    		
-		    	/*
 		    	String content = FileIO.readFileContents(files[i]);
 				Gson parser = new Gson();
 				JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
@@ -83,7 +65,7 @@ public class RepositoryClonerWorker implements Runnable{
 	    			String[] args = { urlHeader + name + urlFooter, outFilePath};
 	    			RepositoryCloner.clone(args);
 					}
-		    	}  */
+		    	}  
 		    //	System.out.println("finished file " + i );
 		    }
 
