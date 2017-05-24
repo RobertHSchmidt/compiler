@@ -1,10 +1,7 @@
 package boa.datagen.forges.github;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -90,7 +87,6 @@ public class GithubLanguageDownloadMaster {
     	File[] files = dir.listFiles();
     	for(int i = 0; i < files.length; i++){
     		String content = FileIO.readFileContents(files[i]);
-    		Scanner sc = new Scanner(content);
 			Gson parser = new Gson();
 			JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
 			for(JsonElement repoE: repos){

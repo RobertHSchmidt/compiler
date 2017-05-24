@@ -41,7 +41,6 @@ public class LanguageDownloadWorker implements Runnable {
 	
 
 	public LanguageDownloadWorker(String repoPath, String output, TokenList tokenList, int start, int end){
-		
 		this.output = output;
 		this.tokens = tokenList;
 		this.repository_location = repoPath;
