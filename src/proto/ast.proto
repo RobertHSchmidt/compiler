@@ -17,6 +17,7 @@ message Namespace {
 	repeated Modifier modifiers = 2;
 	repeated Declaration declarations = 3;
 //	required PositionInfo position = 4;
+	repeated Statement statements = 5;
 }
 
 message Declaration {
@@ -45,6 +46,7 @@ enum TypeKind {
 	ANNOTATION = 6;
 	DELEGATE = 7;
 	GENERIC = 8;
+//	ARRAY = 9;
 }
 
 message Type {
@@ -110,6 +112,7 @@ message Statement {
 	optional Declaration type_declaration = 8;
 	optional Expression expression = 9;
 //	required PositionInfo position = 10;
+	repeated Method methods = 11;
 }
 
 message Expression {
