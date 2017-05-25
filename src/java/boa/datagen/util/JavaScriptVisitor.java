@@ -25,86 +25,7 @@ import java.util.Stack;
 import org.eclipse.jdt.core.dom.MethodRef;
 import org.eclipse.jdt.core.dom.MethodRefParameter;
 import org.eclipse.jdt.core.dom.TagElement;
-import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
-import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
-import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
-import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
-import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.BlockComment;
-import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
-import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CatchClause;
-import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
-import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
-import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
-import org.eclipse.wst.jsdt.core.dom.DoStatement;
-import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
-import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
-import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.FieldAccess;
-import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ForInStatement;
-import org.eclipse.wst.jsdt.core.dom.ForStatement;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.FunctionRef;
-import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
-import org.eclipse.wst.jsdt.core.dom.IfStatement;
-import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
-import org.eclipse.wst.jsdt.core.dom.InferredType;
-import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.LineComment;
-import org.eclipse.wst.jsdt.core.dom.ListExpression;
-import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.NullLiteral;
-import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
-import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
-import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
-import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
-import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
-import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
-import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
-import org.eclipse.wst.jsdt.core.dom.QualifiedName;
-import org.eclipse.wst.jsdt.core.dom.QualifiedType;
-import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
-import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
-import org.eclipse.wst.jsdt.core.dom.SimpleName;
-import org.eclipse.wst.jsdt.core.dom.SimpleType;
-import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Statement;
-import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
-import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.SwitchCase;
-import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.TextElement;
-import org.eclipse.wst.jsdt.core.dom.ThisExpression;
-import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
-import org.eclipse.wst.jsdt.core.dom.TryStatement;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
-import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
-import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WithStatement;
+import org.eclipse.wst.jsdt.core.dom.*;
 
 import boa.types.Ast.Declaration;
 import boa.types.Ast.Method;
@@ -201,9 +122,9 @@ public class JavaScriptVisitor extends ASTVisitor {
 			((org.eclipse.wst.jsdt.core.dom.Comment)c).accept(this);
 		
 		if (!node.statements().isEmpty()) {
-			Declaration.Builder db = Declaration.newBuilder();
-			db.setName("Default");
-			db.setKind(TypeKind.OTHER);
+			boa.types.Ast.Statement.Builder sb = boa.types.Ast.Statement.newBuilder();
+			sb.setName("Default");
+			sb.setKind(TypeKind.OTHER);
 			Method.Builder mb = Method.newBuilder();
 			mb.setName("default");
 			Type.Builder tb = Type.newBuilder();
@@ -215,7 +136,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 					methods.push(new ArrayList<boa.types.Ast.Method>());
 					((FunctionDeclaration) s).accept(this);
 					for (boa.types.Ast.Method m : methods.pop())
-						db.addMethods(m);
+						sb.addMethods(m);
 				}
 				else {
 					statements.push(new ArrayList<boa.types.Ast.Statement>());
@@ -224,8 +145,8 @@ public class JavaScriptVisitor extends ASTVisitor {
 						mb.addStatements(d);
 				}
 			}
-			db.addMethods(mb);
-			b.addDeclarations(db);
+			sb.addMethods(mb);
+			b.addStatments(sb);
 		}
 		return false;
 	}
@@ -305,11 +226,9 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(TypeDeclaration node) {
 		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
 		b.setName(node.getName().getFullyQualifiedName());
-
-			b.setKind(boa.types.Ast.TypeKind.CLASS);
+		b.setKind(boa.types.Ast.TypeKind.CLASS);
 		for (Object m : node.modifiers()) {
-
-				((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
+			((org.eclipse.wst.jsdt.core.dom.Modifier) m).accept(this);
 			b.addModifiers(modifiers.pop());
 		}
 
@@ -323,17 +242,17 @@ public class JavaScriptVisitor extends ASTVisitor {
 		for (Object d : node.bodyDeclarations()) {
 			if (d instanceof FieldDeclaration) {
 				fields.push(new ArrayList<boa.types.Ast.Variable>());
-				((FieldDeclaration)d).accept(this);
+				((FieldDeclaration) d).accept(this);
 				for (boa.types.Ast.Variable v : fields.pop())
 					b.addFields(v);
-			}  else if (d instanceof Initializer) {
+			} else if (d instanceof Initializer) {
 				methods.push(new ArrayList<boa.types.Ast.Method>());
-				((Initializer)d).accept(this);
+				((Initializer) d).accept(this);
 				for (boa.types.Ast.Method m : methods.pop())
 					b.addMethods(m);
 			} else {
 				declarations.push(new ArrayList<boa.types.Ast.Declaration>());
-				((BodyDeclaration)d).accept(this);
+				((BodyDeclaration) d).accept(this);
 				for (boa.types.Ast.Declaration nd : declarations.pop())
 					b.addNestedDeclarations(nd);
 			}
@@ -1638,9 +1557,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(ArrayType node) {
 		throw new RuntimeException("visited unused node ArrayType");
 	}
-
-
-
+	
 	@Override
 	public boolean visit(PrimitiveType node) {
 		throw new RuntimeException("visited unused node PrimitiveType");
@@ -1655,8 +1572,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(SimpleType node) {
 		throw new RuntimeException("visited unused node SimpleType");
 	}
-
-
 
 	@Override
 	public boolean visit(ImportDeclaration node) {
