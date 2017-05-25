@@ -203,11 +203,11 @@ public class JavaScriptVisitor extends ASTVisitor {
 		if (!node.statements().isEmpty()) {
 			Declaration.Builder db = Declaration.newBuilder();
 			db.setName("Default");
-			db.setKind(TypeKind.CLASS);
+			db.setKind(TypeKind.OTHER);
 			Method.Builder mb = Method.newBuilder();
 			mb.setName("default");
 			Type.Builder tb = Type.newBuilder();
-			tb.setKind(TypeKind.CLASS);
+			tb.setKind(TypeKind.OTHER);
 			tb.setName(getIndex("Default"));
 			mb.setReturnType(tb);
 			for(Object s:node.statements()){
@@ -1068,6 +1068,8 @@ public class JavaScriptVisitor extends ASTVisitor {
 		list.add(b.build());
 		return false;
 	}
+	
+
 
 	@Override
 	public boolean visit(WhileStatement node) {
@@ -1581,6 +1583,34 @@ public class JavaScriptVisitor extends ASTVisitor {
 		expressions.push(eb.build());
 		return false;
 	}
+	
+	@Override
+	public boolean visit(SingleVariableDeclaration node) {
+		boa.types.Ast.Expression.Builder eb = boa.types.Ast.Expression.newBuilder();
+		// eb.setPosition(pos.build());
+		eb.setKind(boa.types.Ast.Expression.ExpressionKind.VARDECL);
+		Variable.Builder b = Variable.newBuilder();
+		// b.setPosition(pos.build());//FIXME
+		b.setName(node.getName().getFullyQualifiedName());
+		for (Object m : node.modifiers()) {
+			((org.eclipse.wst.jsdt.core.dom.Modifier) m).accept(this);
+			b.addModifiers(modifiers.pop());
+		}
+		boa.types.Ast.Type.Builder tb = boa.types.Ast.Type.newBuilder();
+		String name = typeName(node.getType());
+		for (int i = 0; i < node.getExtraDimensions(); i++)
+			name += "[]";
+		tb.setName(getIndex(name));
+		tb.setKind(boa.types.Ast.TypeKind.OTHER);
+		b.setVariableType(tb.build());
+		if (node.getInitializer() != null) {
+			node.getInitializer().accept(this);
+			b.setInitializer(expressions.pop());
+		}
+		eb.addVariableDecls(b.build());
+		expressions.push(eb.build());
+		return false;
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Utility methods
@@ -1636,13 +1666,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(PackageDeclaration node) {
 		throw new RuntimeException("visited unused node PackageDeclaration");
-	}
-
-	@Override
-	public boolean visit(SingleVariableDeclaration node) {
-		// FIXME 
-		//throw new RuntimeException("visited unused node SingleVariableDeclaration");
-		return false;
 	}
 
 	@Override
