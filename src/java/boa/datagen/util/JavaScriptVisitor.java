@@ -123,8 +123,8 @@ public class JavaScriptVisitor extends ASTVisitor {
 		
 		if (!node.statements().isEmpty()) {
 			boa.types.Ast.Statement.Builder sb = boa.types.Ast.Statement.newBuilder();
-			sb.setName("Default");
-			sb.setKind(TypeKind.OTHER);
+		//	sb.setName("Default");
+		//	sb.setKind(TypeKind.OTHER);
 			Method.Builder mb = Method.newBuilder();
 			mb.setName("default");
 			Type.Builder tb = Type.newBuilder();
