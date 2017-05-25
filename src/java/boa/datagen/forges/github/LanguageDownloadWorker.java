@@ -71,7 +71,7 @@ public class LanguageDownloadWorker implements Runnable {
 				JsonObject repo = repos.get(i).getAsJsonObject();
 				String name = repo.get("full_name").getAsString();
 				if(names.contains(name)){
-					System.out.println("already processed " + name + " continuing");
+				//	System.out.println("already processed " + name + " continuing");
 					continue;
 				}
 				String langurl = this.language_url_header + name + this.language_url_footer;
@@ -90,7 +90,7 @@ public class LanguageDownloadWorker implements Runnable {
 					tok.setResetTime(mc.getLimitResetTime());
 				} else {
 					final int responsecode = mc.getResponseCode();
-					System.err.println("authntication error " + responsecode);
+				//	System.err.println("authntication error " + responsecode);
 					mc = new MetadataCacher("https://api.github.com/repositories", tok.getUserName(), tok.getToken());
 					if (mc.authenticate()) { // if authenticate doesn't pass then token is exhausted.
 						tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());
@@ -115,7 +115,7 @@ public class LanguageDownloadWorker implements Runnable {
 			if (this.javarepos.size() % RECORDS_PER_FILE == 0) {
 				fileToWriteJson = new File(output + "/java/Thread- " + Thread.currentThread().getId() + "-page-" + javaCounter + ".json");
 				while(fileToWriteJson.exists()){
-					System.out.println("file arleady exist");
+					System.out.println("file java/thread-" + Thread.currentThread().getId()  + "-page-" + javaCounter+ " arleady exist");
 					javaCounter ++;
 					fileToWriteJson = new File(output + "/java/Thread- " + Thread.currentThread().getId() + "-page-" + javaCounter + ".json");
 				}
@@ -128,7 +128,7 @@ public class LanguageDownloadWorker implements Runnable {
 			if (this.jsrepos.size() % RECORDS_PER_FILE == 0) {
 				fileToWriteJson = new File(output + "/js/Thread- " + Thread.currentThread().getId() + "-page-" + jsCounter + ".json");
 				while(fileToWriteJson.exists()){
-					System.out.println("file arleady exist");
+					System.out.println("file js/thread-" + Thread.currentThread().getId()  + "-page-" + jsCounter + " arleady exist");
 					jsCounter ++;
 					fileToWriteJson = new File(output + "/js/Thread- " + Thread.currentThread().getId() + "-page-" + jsCounter + ".json");
 				}
@@ -141,7 +141,7 @@ public class LanguageDownloadWorker implements Runnable {
 			if (this.phprepos.size() % RECORDS_PER_FILE == 0) {
 				fileToWriteJson = new File(output + "/php/Thread- " + Thread.currentThread().getId() + "-page-" + phpCounter + ".json");
 				while(fileToWriteJson.exists()){
-					System.out.println("file arleady exist");
+					System.out.println("file php/thread-" + Thread.currentThread().getId()  + "-page-" + phpCounter+ " arleady exist");
 					phpCounter ++;
 					fileToWriteJson = new File(output + "/php/Thread- " + Thread.currentThread().getId() + "-page-" + phpCounter + ".json");
 				}
@@ -154,7 +154,7 @@ public class LanguageDownloadWorker implements Runnable {
 			if (this.scalarepos.size() % RECORDS_PER_FILE == 0) {
 				fileToWriteJson = new File(output + "/scala/Thread- " + Thread.currentThread().getId() + "-page-" + scalaCounter + ".json");
 				while(fileToWriteJson.exists()){
-					System.out.println("file arleady exist");
+					System.out.println("file scala/thread-" + Thread.currentThread().getId()  + "-page-" + scalaCounter + " arleady exist");
 					scalaCounter ++;
 					fileToWriteJson = new File(output + "/scala/Thread- " + Thread.currentThread().getId() + "-page-" + scalaCounter + ".json");
 				}
@@ -167,7 +167,7 @@ public class LanguageDownloadWorker implements Runnable {
 			if (this.otherrepos.size() % RECORDS_PER_FILE == 0) {
 				fileToWriteJson = new File(output + "/other/Thread- " + Thread.currentThread().getId() + "-page-" + other + ".json");
 				while(fileToWriteJson.exists()){
-					System.out.println("file arleady exist");
+					System.out.println("file other/thread-" + Thread.currentThread().getId()  + "-page-" + other + " arleady exist");
 					other ++;
 					fileToWriteJson = new File(output + "/other/Thread- " + Thread.currentThread().getId() + "-page-" + other + ".json");
 				}

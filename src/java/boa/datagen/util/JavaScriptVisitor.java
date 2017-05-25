@@ -122,31 +122,20 @@ public class JavaScriptVisitor extends ASTVisitor {
 			((org.eclipse.wst.jsdt.core.dom.Comment)c).accept(this);
 		
 		if (!node.statements().isEmpty()) {
-			boa.types.Ast.Statement.Builder sb = boa.types.Ast.Statement.newBuilder();
-		//	sb.setName("Default");
-		//	sb.setKind(TypeKind.OTHER);
-			Method.Builder mb = Method.newBuilder();
-			mb.setName("default");
-			Type.Builder tb = Type.newBuilder();
-			tb.setKind(TypeKind.OTHER);
-			tb.setName(getIndex("Default"));
-			mb.setReturnType(tb);
 			for(Object s:node.statements()){
 				if (s instanceof FunctionDeclaration) {
 					methods.push(new ArrayList<boa.types.Ast.Method>());
 					((FunctionDeclaration) s).accept(this);
 					for (boa.types.Ast.Method m : methods.pop())
-						sb.addMethods(m);
+						b.addMethods(m);
 				}
 				else {
 					statements.push(new ArrayList<boa.types.Ast.Statement>());
 					((Statement)s).accept(this);
 					for (boa.types.Ast.Statement d : statements.pop())
-						mb.addStatements(d);
+						b.addStatements(d);
 				}
 			}
-			sb.addMethods(mb);
-			b.addStatments(sb);
 		}
 		return false;
 	}
@@ -214,6 +203,40 @@ public class JavaScriptVisitor extends ASTVisitor {
 		buildPosition(node);
 		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Comment.CommentKind.DOC);
+		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+		comments.add(b.build());
+		return false;
+	}
+	
+	@Override
+	public boolean visit(FunctionRef node) {
+		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
+		buildPosition(node);
+		b.setPosition(pos.build());
+		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
+		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+		comments.add(b.build());
+		return false;
+	//	throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
+	}
+	
+	@Override
+	public boolean visit(FunctionRefParameter node) {
+		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
+		buildPosition(node);
+		b.setPosition(pos.build());
+		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
+		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+		comments.add(b.build());
+		return false;
+	}
+	
+	@Override
+	public boolean visit(MemberRef node) {
+		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
+		buildPosition(node);
+		b.setPosition(pos.build());
+		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
 		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
 		comments.add(b.build());
 		return false;
@@ -1584,23 +1607,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 	}
 
 	@Override
-	public boolean visit(MemberRef node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-
-
-	@Override
 	public boolean visit(VariableDeclarationFragment node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-	
-	@Override
-	public boolean visit(FunctionRef node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-	
-	@Override
-	public boolean visit(FunctionRefParameter node) {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
 	

@@ -18,6 +18,7 @@ message Namespace {
 	repeated Declaration declarations = 3;
 //	required PositionInfo position = 4;
 	repeated Statement statements = 5;
+	repeated Method methods = 6;
 }
 
 message Declaration {
@@ -112,7 +113,6 @@ message Statement {
 	optional Declaration type_declaration = 8;
 	optional Expression expression = 9;
 //	required PositionInfo position = 10;
-	repeated Method methods = 11;
 }
 
 message Expression {
@@ -224,6 +224,7 @@ message Comment {
 		DOCUMENTATION = 3;
 		SPEC = 4;
 		SPECIFICATION = 4;
+		REF = 5;
 	}
 	required CommentKind kind = 1;
 	required string value = 2;
