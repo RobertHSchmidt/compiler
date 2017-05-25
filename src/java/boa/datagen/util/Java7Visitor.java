@@ -1492,6 +1492,34 @@ public class Java7Visitor extends ASTVisitor {
 		expressions.push(eb.build());
 		return false;
 	}
+	
+	@Override
+	public boolean visit(SingleVariableDeclaration node) {
+		boa.types.Ast.Expression.Builder eb = boa.types.Ast.Expression.newBuilder();
+		// eb.setPosition(pos.build());
+		eb.setKind(boa.types.Ast.Expression.ExpressionKind.VARDECL);
+		Variable.Builder b = Variable.newBuilder();
+		// b.setPosition(pos.build());//FIXME
+		b.setName(node.getName().getFullyQualifiedName());
+		for (Object m : node.modifiers()) {
+			((org.eclipse.jdt.core.dom.Modifier) m).accept(this);
+			b.addModifiers(modifiers.pop());
+		}
+		boa.types.Ast.Type.Builder tb = boa.types.Ast.Type.newBuilder();
+		String name = typeName(node.getType());
+		for (int i = 0; i < node.getExtraDimensions(); i++)
+			name += "[]";
+		tb.setName(getIndex(name));
+		tb.setKind(boa.types.Ast.TypeKind.OTHER);
+		b.setVariableType(tb.build());
+		if (node.getInitializer() != null) {
+			node.getInitializer().accept(this);
+			b.setInitializer(expressions.pop());
+		}
+		eb.addVariableDecls(b.build());
+		expressions.push(eb.build());
+		return false;
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Utility methods
@@ -1542,7 +1570,7 @@ public class Java7Visitor extends ASTVisitor {
 			name += typeName((org.eclipse.jdt.core.dom.Type)o);
 		}
 		return name;
-	}
+	}  
 
 	protected String typeName(final UnionType t) {
 		String name = "";
@@ -1629,10 +1657,7 @@ public class Java7Visitor extends ASTVisitor {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
 
-	@Override
-	public boolean visit(SingleVariableDeclaration node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
+	
 
 	@Override
 	public boolean visit(MemberRef node) {

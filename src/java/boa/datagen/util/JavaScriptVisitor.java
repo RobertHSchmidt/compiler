@@ -241,6 +241,17 @@ public class JavaScriptVisitor extends ASTVisitor {
 		comments.add(b.build());
 		return false;
 	}
+	
+	@Override
+	public boolean visit(org.eclipse.wst.jsdt.core.dom.TagElement node) {
+		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
+		buildPosition(node);
+		b.setPosition(pos.build());
+		b.setKind(boa.types.Ast.Comment.CommentKind.DOC);
+		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
+		comments.add(b.build());
+		return false;
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Type Declarations
@@ -1613,11 +1624,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	
 	@Override
 	public boolean visit(InferredType node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-	
-	@Override
-	public boolean visit(org.eclipse.wst.jsdt.core.dom.TagElement node) {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
 	
