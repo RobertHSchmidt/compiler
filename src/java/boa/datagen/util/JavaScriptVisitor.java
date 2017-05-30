@@ -782,6 +782,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 	
+	
 	@Override
 	public boolean visit(ReturnStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
