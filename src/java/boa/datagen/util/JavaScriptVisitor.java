@@ -268,7 +268,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 //			b.setPosition(pos.build()); // FIXME
 			b.setName(f.getName().getFullyQualifiedName());
 			for (Object m : node.modifiers()) {
-
 					((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
 				b.addModifiers(modifiers.pop());
 			}
@@ -321,8 +320,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 
 	//////////////////////////////////////////////////////////////
 	// Statements
-
-
 
 	@Override
 	public boolean visit(Block node) {
@@ -481,7 +478,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 //		vb.setPosition(pos.build());//FIXME
 		vb.setName(ex.getName().getFullyQualifiedName());
 		for (Object m : ex.modifiers()) {
-
 				((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
 			vb.addModifiers(modifiers.pop());
 		}
@@ -607,7 +603,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 
-	
 	@Override
 	public boolean visit(TextElement node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
@@ -617,7 +612,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		expressions.push(b.build());
 		return false;
 	}
-	
 	
 	@Override
 	public boolean visit(ForStatement node) {
@@ -644,8 +638,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		list.add(b.build());
 		return false;
 	}
-	
-
 
 	@Override
 	public boolean visit(IfStatement node) {
@@ -717,15 +709,13 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(FunctionDeclaration node) {
 		List<boa.types.Ast.Method> list = methods.peek();
 		Method.Builder b = Method.newBuilder();
-//		b.setPosition(pos.build());
+		// b.setPosition(pos.build());
 		if (node.isConstructor())
 			b.setName("<init>");
-		else{
-			if(node.getName() != null)
+		else if (node.getName() != null)
 			b.setName(node.getName().getFullyQualifiedName());
-		}
 		for (Object m : node.modifiers()) {
-				((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
+			((org.eclipse.wst.jsdt.core.dom.Modifier) m).accept(this);
 			b.addModifiers(modifiers.pop());
 		}
 		boa.types.Ast.Type.Builder tb = boa.types.Ast.Type.newBuilder();
@@ -741,14 +731,13 @@ public class JavaScriptVisitor extends ASTVisitor {
 			tb.setKind(boa.types.Ast.TypeKind.OTHER);
 			b.setReturnType(tb.build());
 		}
-
 		for (Object o : node.parameters()) {
-			SingleVariableDeclaration ex = (SingleVariableDeclaration)o;
+			SingleVariableDeclaration ex = (SingleVariableDeclaration) o;
 			Variable.Builder vb = Variable.newBuilder();
-//			vb.setPosition(pos.build()); // FIXME
+			// vb.setPosition(pos.build()); // FIXME
 			vb.setName(ex.getName().getFullyQualifiedName());
 			for (Object m : ex.modifiers()) {
-					((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
+				((org.eclipse.wst.jsdt.core.dom.Modifier) m).accept(this);
 				vb.addModifiers(modifiers.pop());
 			}
 			boa.types.Ast.Type.Builder tp = boa.types.Ast.Type.newBuilder();
@@ -768,7 +757,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 		}
 		for (Object o : node.thrownExceptions()) {
 			boa.types.Ast.Type.Builder tp = boa.types.Ast.Type.newBuilder();
-			tp.setName(getIndex(((Name)o).getFullyQualifiedName()));
+			tp.setName(getIndex(((Name) o).getFullyQualifiedName()));
 			tp.setKind(boa.types.Ast.TypeKind.CLASS);
 			b.addExceptionTypes(tp.build());
 		}
@@ -781,7 +770,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		list.add(b.build());
 		return false;
 	}
-	
 	
 	@Override
 	public boolean visit(ReturnStatement node) {
@@ -857,7 +845,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 
-
 	@Override
 	public boolean visit(ThrowStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
@@ -884,7 +871,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 			node.getFinally().accept(this);
 		for (boa.types.Ast.Statement s : statements.pop())
 			b.addStatements(s);
-
 		list.add(b.build());
 		return false;
 	}
@@ -928,7 +914,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 					name += "[]";
 				tb.setName(getIndex(name));
 			}
-
 			tb.setKind(boa.types.Ast.TypeKind.OTHER);
 			vb.setVariableType(tb.build());
 			if (f.getInitializer() != null) {
@@ -941,8 +926,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		list.add(b.build());
 		return false;
 	}
-	
-
 
 	@Override
 	public boolean visit(WhileStatement node) {
@@ -1131,18 +1114,14 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(FunctionExpression node) {
 		boa.types.Ast.Expression.Builder bui = boa.types.Ast.Expression.newBuilder();
 //		b.setPosition(pos.build());
-		Declaration.Builder db = Declaration.newBuilder();
-		db.setName("Default");
-		db.setKind(TypeKind.OTHER);
-		bui.setKind(boa.types.Ast.Expression.ExpressionKind.OTHER);
+		bui.setKind(boa.types.Ast.Expression.ExpressionKind.CAST);
 		methods.push(new ArrayList<boa.types.Ast.Method>());
 		node.getMethod().accept(this);
 		for (boa.types.Ast.Method d : methods.pop())
-			db.addMethods(d);
+			b.addMethods(d);
 		//TODO: Expressions are missing 
 //		node.getExpression().accept(this);
 //		b.addExpressions(expressions.pop());
-		b.addDeclarations(db);
 		expressions.push(bui.build());
 		return false;
 	}
