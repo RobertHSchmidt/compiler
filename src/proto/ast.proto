@@ -224,7 +224,6 @@ message Comment {
 		DOCUMENTATION = 3;
 		SPEC = 4;
 		SPECIFICATION = 4;
-		REF = 5;
 	}
 	required CommentKind kind = 1;
 	required string value = 2;

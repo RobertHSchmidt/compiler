@@ -211,16 +211,18 @@ public class Java7Visitor extends ASTVisitor {
 				((Initializer)d).accept(this);
 				for (boa.types.Ast.Method m : methods.pop())
 					b.addMethods(m);
-			} else {
+			} else if (d instanceof AnnotationTypeMemberDeclaration){
+				methods.push(new ArrayList<boa.types.Ast.Method>());
+				((AnnotationTypeDeclaration)d).accept(this);
+				for (boa.types.Ast.Method m : methods.pop())
+					b.addMethods(m);
+			}else {
 				declarations.push(new ArrayList<boa.types.Ast.Declaration>());
 				((BodyDeclaration)d).accept(this);
 				for (boa.types.Ast.Declaration nd : declarations.pop())
 					b.addNestedDeclarations(nd);
 			}
 		}
-		// TODO initializers
-		// TODO enum constants
-		// TODO annotation type members
 		declarations.peek().add(b.build());
 		return false;
 	}
@@ -264,9 +266,19 @@ public class Java7Visitor extends ASTVisitor {
 //		b.setPosition(pos.build());
 		b.setName(node.getName().getFullyQualifiedName());
 		b.setKind(boa.types.Ast.TypeKind.ENUM);
-		// TODO
 		declarations.peek().add(b.build());
 		return false;
+	}
+	
+	@Override
+	public boolean visit(EnumConstantDeclaration node) {
+		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
+//		b.setPosition(pos.build());
+		b.setName(node.getName().getFullyQualifiedName());
+		b.setKind(boa.types.Ast.TypeKind.ENUM);
+		declarations.peek().add(b.build());
+		return false;
+	//	throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
 
 	@Override
@@ -275,7 +287,6 @@ public class Java7Visitor extends ASTVisitor {
 //		b.setPosition(pos.build());
 		b.setName(node.getName().getFullyQualifiedName());
 		b.setKind(boa.types.Ast.TypeKind.ANNOTATION);
-		// TODO
 		declarations.peek().add(b.build());
 		return false;
 	}
@@ -1643,11 +1654,6 @@ public class Java7Visitor extends ASTVisitor {
 	}
 
 	@Override
-	public boolean visit(EnumConstantDeclaration node) {
-		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-
-	@Override
 	public boolean visit(ImportDeclaration node) {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
@@ -1656,8 +1662,6 @@ public class Java7Visitor extends ASTVisitor {
 	public boolean visit(PackageDeclaration node) {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
 	}
-
-	
 
 	@Override
 	public boolean visit(MemberRef node) {

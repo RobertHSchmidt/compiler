@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.MethodRef;
 import org.eclipse.jdt.core.dom.MethodRefParameter;
 import org.eclipse.jdt.core.dom.TagElement;
@@ -140,8 +142,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	
-	
 	@Override
 	public boolean visit(org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration node) {
 		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
@@ -207,51 +207,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		comments.add(b.build());
 		return false;
 	}
-	
-	@Override
-	public boolean visit(FunctionRef node) {
-		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
-		buildPosition(node);
-		b.setPosition(pos.build());
-		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
-		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
-		comments.add(b.build());
-		return false;
-	//	throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
-	}
-	
-	@Override
-	public boolean visit(FunctionRefParameter node) {
-		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
-		buildPosition(node);
-		b.setPosition(pos.build());
-		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
-		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
-		comments.add(b.build());
-		return false;
-	}
-	
-	@Override
-	public boolean visit(MemberRef node) {
-		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
-		buildPosition(node);
-		b.setPosition(pos.build());
-		b.setKind(boa.types.Ast.Comment.CommentKind.REF);
-		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
-		comments.add(b.build());
-		return false;
-	}
-	
-	@Override
-	public boolean visit(org.eclipse.wst.jsdt.core.dom.TagElement node) {
-		boa.types.Ast.Comment.Builder b = boa.types.Ast.Comment.newBuilder();
-		buildPosition(node);
-		b.setPosition(pos.build());
-		b.setKind(boa.types.Ast.Comment.CommentKind.DOC);
-		b.setValue(src.substring(node.getStartPosition(), node.getStartPosition() + node.getLength()));
-		comments.add(b.build());
-		return false;
-	}
 
 	//////////////////////////////////////////////////////////////
 	// Type Declarations
@@ -284,6 +239,11 @@ public class JavaScriptVisitor extends ASTVisitor {
 				((Initializer) d).accept(this);
 				for (boa.types.Ast.Method m : methods.pop())
 					b.addMethods(m);
+			} else if (d instanceof FunctionDeclaration){
+				methods.push(new ArrayList<boa.types.Ast.Method>());
+				((FunctionDeclaration) d).accept(this);
+				for (boa.types.Ast.Method m : methods.pop())
+					b.addMethods(m);
 			} else {
 				declarations.push(new ArrayList<boa.types.Ast.Declaration>());
 				((BodyDeclaration) d).accept(this);
@@ -291,49 +251,12 @@ public class JavaScriptVisitor extends ASTVisitor {
 					b.addNestedDeclarations(nd);
 			}
 		}
-		// TODO initializers
-		// TODO enum constants
-		// TODO annotation type members
 		declarations.peek().add(b.build());
 		return false;
 	}
-//
-//	public boolean visit(AnonymousClassDeclaration node) {
-//		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
-////		b.setPosition(pos.build());
-//		b.setName("");
-//		b.setKind(boa.types.Ast.TypeKind.ANONYMOUS);
-//		for (Object d : node.bodyDeclarations()) {
-//			if (d instanceof FieldDeclaration) {
-//				fields.push(new ArrayList<boa.types.Ast.Variable>());
-//				((FieldDeclaration)d).accept(this);
-//				for (boa.types.Ast.Variable v : fields.pop())
-//					b.addFields(v);
-//			}  else if (d instanceof Initializer) {
-//				methods.push(new ArrayList<boa.types.Ast.Method>());
-//				((Initializer)d).accept(this);
-//				for (boa.types.Ast.Method m : methods.pop())
-//					b.addMethods(m);
-//			} else {
-//				declarations.push(new ArrayList<boa.types.Ast.Declaration>());
-//				((BodyDeclaration)d).accept(this);
-//				for (boa.types.Ast.Declaration nd : declarations.pop())
-//					b.addNestedDeclarations(nd);
-//			}
-//		}
-//		declarations.peek().add(b.build());
-//		return false;
-//	}
-
-
-
-
 
 	//////////////////////////////////////////////////////////////
 	// Field/Method Declarations
-
-
-
 
 
 	@Override
@@ -770,9 +693,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		list.add(b.build());
 		return false;
 	}
-	
-	
-	
 
 	@Override
 	public boolean visit(LabeledStatement node) {
@@ -793,7 +713,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 
-	
 	@Override
 	public boolean visit(FunctionDeclaration node) {
 		List<boa.types.Ast.Method> list = methods.peek();
@@ -1617,6 +1536,26 @@ public class JavaScriptVisitor extends ASTVisitor {
 		throw new RuntimeException("visited unused node PackageDeclaration");
 	}
 
+	@Override
+	public boolean visit(FunctionRef node) {
+		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
+	}
+	
+	@Override
+	public boolean visit(FunctionRefParameter node) {
+		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
+	}
+	
+	@Override
+	public boolean visit(MemberRef node) {
+		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
+	}
+	
+	@Override
+	public boolean visit(org.eclipse.wst.jsdt.core.dom.TagElement node) {
+		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
+	}
+	
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
 		throw new RuntimeException("visited unused node " + node.getClass().getSimpleName());
