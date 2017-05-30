@@ -1051,7 +1051,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 
-
 	@Override
 	public boolean visit(CharacterLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
@@ -1241,7 +1240,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 		return false;
 	}
 
-
 	@Override
 	public boolean visit(NullLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
@@ -1287,7 +1285,12 @@ public class JavaScriptVisitor extends ASTVisitor {
 
 	@Override
 	public boolean visit(ParenthesizedExpression node) {
-		// TODO maybe? or ignore...
+		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
+//		b.setPosition(pos.build());
+		b.setKind(boa.types.Ast.Expression.ExpressionKind.PAREN);
+		node.getExpression().accept(this);
+		b.addExpressions(expressions.pop());
+		expressions.push(b.build());
 		return true;
 	}
 

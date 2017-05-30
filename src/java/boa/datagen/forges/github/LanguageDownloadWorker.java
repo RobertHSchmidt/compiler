@@ -89,8 +89,8 @@ public class LanguageDownloadWorker implements Runnable {
 					tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());
 					tok.setResetTime(mc.getLimitResetTime());
 				} else {
-					final int responsecode = mc.getResponseCode();
-				//	System.err.println("authntication error " + responsecode);
+				//	final int responsecode = mc.getResponseCode();
+				//	System.err.println("authentication error " + responsecode);
 					mc = new MetadataCacher("https://api.github.com/repositories", tok.getUserName(), tok.getToken());
 					if (mc.authenticate()) { // if authenticate doesn't pass then token is exhausted.
 						tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());

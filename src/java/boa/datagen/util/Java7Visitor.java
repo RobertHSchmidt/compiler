@@ -227,7 +227,6 @@ public class Java7Visitor extends ASTVisitor {
 		return false;
 	}
 
-	
 	@Override
 	public boolean visit(AnonymousClassDeclaration node) {
 		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
