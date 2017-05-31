@@ -102,7 +102,7 @@ public class LanguageDownloadWorker implements Runnable {
 						i--;
 					}
 				}
-			}
+			} 
 			pageNumber++;
 			System.out.println(Thread.currentThread().getId() + " processing: " + pageNumber);
 		}

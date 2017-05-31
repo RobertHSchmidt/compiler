@@ -47,7 +47,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	private JavaScriptUnit root = null;
 	private PositionInfo.Builder pos = null;
 	private String src = null;
-
 	private Namespace.Builder b = Namespace.newBuilder();
 	private List<boa.types.Ast.Comment> comments = new ArrayList<boa.types.Ast.Comment>();
 	private List<String> imports = new ArrayList<String>();

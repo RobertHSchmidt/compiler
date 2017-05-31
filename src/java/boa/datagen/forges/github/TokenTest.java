@@ -12,6 +12,5 @@ public class TokenTest {
 			System.out.println("Remaining requests: " + mc.getNumberOfRemainingLimit());
 			System.out.println("Time till reset: " + (mc.getLimitResetTime() * 1000 - System.currentTimeMillis()) / 1000 + " sec");
 		}
-		
 	}
 }
