@@ -140,7 +140,7 @@ public abstract class AbstractCommit {
 		final ChangedFile.Builder fb = ChangedFile.newBuilder();
 		fb.setName(path);
 		fb.setKind(FileKind.OTHER);
-		
+
 		final String lowerPath = path.toLowerCase();
 		if (lowerPath.endsWith(".txt"))
 			fb.setKind(FileKind.TEXT);
@@ -152,43 +152,60 @@ public abstract class AbstractCommit {
 			final String content = getFileContents(path);
 
 			fb.setKind(FileKind.SOURCE_JAVA_JLS2);
-			if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_4, AST.JLS2, false, astWriter, revKey + keyDelim + path)) {
+			if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_4, AST.JLS2, false, astWriter,
+					revKey + keyDelim + path)) {
 				if (debug)
 					System.err.println("Found JLS2 parse error in: revision " + id + ": file " + path);
 
 				fb.setKind(FileKind.SOURCE_JAVA_JLS3);
-				if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_5, AST.JLS3, false, astWriter, revKey + keyDelim + path)) {
+				if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_5, AST.JLS3, false, astWriter,
+						revKey + keyDelim + path)) {
 					if (debug)
 						System.err.println("Found JLS3 parse error in: revision " + id + ": file " + path);
 
 					fb.setKind(FileKind.SOURCE_JAVA_JLS4);
-					if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_7, AST.JLS4, false, astWriter, revKey + keyDelim + path)) {
+					if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_7, AST.JLS4, false, astWriter,
+							revKey + keyDelim + path)) {
 						if (debug)
 							System.err.println("Found JLS4 parse error in: revision " + id + ": file " + path);
 
 						fb.setKind(FileKind.SOURCE_JAVA_JLS8);
-						if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_8, AST.JLS8, false, astWriter, revKey + keyDelim + path)) {
+						if (!parseJavaFile(path, fb, content, JavaCore.VERSION_1_8, AST.JLS8, false, astWriter,
+								revKey + keyDelim + path)) {
 							if (debug)
 								System.err.println("Found JLS8 parse error in: revision " + id + ": file " + path);
 
 							fb.setKind(FileKind.SOURCE_JAVA_ERROR);
 							try {
-								astWriter.append(new Text(revKey + keyDelim + fb.getName()), new BytesWritable(ASTRoot.newBuilder().build().toByteArray()));
+								astWriter.append(new Text(revKey + keyDelim + fb.getName()),
+										new BytesWritable(ASTRoot.newBuilder().build().toByteArray()));
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-						} else
-							if (debug)
-								System.err.println("Accepted JLS8: revision " + id + ": file " + path);
-					} else
-						if (debug)
-							System.err.println("Accepted JLS4: revision " + id + ": file " + path);
-				} else
-					if (debug)
-						System.err.println("Accepted JLS3: revision " + id + ": file " + path);
-			} else
+						} else if (debug)
+							System.err.println("Accepted JLS8: revision " + id + ": file " + path);
+					} else if (debug)
+						System.err.println("Accepted JLS4: revision " + id + ": file " + path);
+				} else if (debug)
+					System.err.println("Accepted JLS3: revision " + id + ": file " + path);
+			} else if (debug)
+				System.err.println("Accepted JLS2: revision " + id + ": file " + path);
+		} else if (lowerPath.endsWith(".js") && parse) {
+			final String content = getFileContents(path);
+			fb.setKind(FileKind.SOURCE_JS_JSLS2);
+			if (!parseJavaScriptFile(path, fb, content, JavaScriptCore.VERSION_1_6, org.eclipse.wst.jsdt.core.dom.AST.JLS2,
+					false, astWriter, revKey + keyDelim + path)) {
 				if (debug)
-					System.err.println("Accepted JLS2: revision " + id + ": file " + path);
+					System.err.println("Found JLS2 parse error in: revision " + id + ": file " + path);
+				fb.setKind(FileKind.SOURCE_JS_JSLS3);
+				if (!parseJavaScriptFile(path, fb, content, JavaScriptCore.VERSION_1_7, org.eclipse.wst.jsdt.core.dom.AST.JLS3,
+						false, astWriter, revKey + keyDelim + path)) {
+					if (debug)
+						System.err.println("Found JLS3 parse error in: revision " + id + ": file " + path);
+				} else if (debug)
+					System.err.println("Accepted JLS3: revision " + id + ": file " + path);
+			} else if (debug)
+				System.err.println("Accepted JLS2: revision " + id + ": file " + path);
 		}
 		fb.setKey(revKey);
 
@@ -228,8 +245,8 @@ public abstract class AbstractCommit {
 				final JavaScriptVisitor visitor = new JavaScriptVisitor(content);
 				try {
 					ast.addNamespaces(visitor.getNamespaces(cu));
-					// for (final String s : visitor.getImports())
-					// ast.addImports(s);
+					for (final String s : visitor.getImports())
+						ast.addImports(s);
 					/*
 					 * for (final Comment c : visitor.getComments())
 					 * comments.addComments(c);

@@ -1317,6 +1317,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 		expressions.push(b.build());
 		return false;
 	}
+	
 	@Override
 	public boolean visit(PrefixExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();

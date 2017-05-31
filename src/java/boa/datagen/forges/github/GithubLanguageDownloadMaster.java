@@ -86,6 +86,7 @@ public class GithubLanguageDownloadMaster {
     	File dir = new File(filePath);
     	File[] files = dir.listFiles();
     	for(int i = 0; i < files.length; i++){
+    		System.out.println("proccessing page " + files[i].getName());
     		String content = FileIO.readFileContents(files[i]);
 			Gson parser = new Gson();
 			JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();

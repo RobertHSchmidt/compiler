@@ -38,6 +38,13 @@ message ChangedFile {
 		CS3 = 203;
 		CS4 = 204;
 		CS5 = 205;
+		
+		SOURCE_JS_ERROR = 300;
+		SOURCE_JS_JSLS2 = 301;
+		SOURCE_JS_JSLS3 = 302;
+		JS_ERROR = 300;
+		JSLS2 = 301;
+		JSLS3 = 302;
 	}
 	required ChangeKind change = 1;
 	required FileKind kind = 2;
