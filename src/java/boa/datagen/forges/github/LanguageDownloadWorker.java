@@ -72,6 +72,7 @@ public class LanguageDownloadWorker implements Runnable {
 				String name = repo.get("full_name").getAsString();
 				if(names.contains(name)){
 				//	System.out.println("already processed " + name + " continuing");
+					names.remove(name);
 					continue;
 				}
 				String langurl = this.language_url_header + name + this.language_url_footer;

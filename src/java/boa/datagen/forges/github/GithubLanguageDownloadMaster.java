@@ -56,6 +56,7 @@ public class GithubLanguageDownloadMaster {
         }
     }
 
+    //when recovering use -Xmx4024m to increase heap size 
     public static void main(String[] args) {
         if (args.length < 3) {
             throw new IllegalArgumentException();
