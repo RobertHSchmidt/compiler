@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Scanner;
 
 
 /**
@@ -35,12 +37,15 @@ public class LanguageDownloadWorker implements Runnable {
 	int phpCounter = 1;
 	int scalaCounter = 1;
 	int other = 1;
+	int index = 0;
 	final static int RECORDS_PER_FILE = 100;
 	final int startFileNumber;
 	final int endFileNumber;
-	
+	HashSet<String> names = GithubLanguageDownloadMaster.names;// new HashSet<String>();
+	String namesFilePath = "";
 
-	public LanguageDownloadWorker(String repoPath, String output, TokenList tokenList, int start, int end){
+	public LanguageDownloadWorker(String repoPath, String output, TokenList tokenList, int start, int end, int index)
+			throws FileNotFoundException {
 		this.output = output;
 		this.tokens = tokenList;
 		this.repository_location = repoPath;
@@ -51,6 +56,18 @@ public class LanguageDownloadWorker implements Runnable {
 		this.otherrepos = new JsonArray();
 		this.startFileNumber = start;
 		this.endFileNumber = end;
+		this.index = index;
+		/*
+		namesFilePath = output + "/" + index + ".txt";
+		File namesFile = new File(namesFilePath);
+		if (namesFile.exists()) {
+			Scanner sc = new Scanner(namesFile);
+			while (sc.hasNextLine()) {
+				names.add(sc.nextLine());
+			}
+			sc.close();
+		}
+		*/
 	}
 
 	public void downloadLangForRepoIn(int from, int to) throws FileNotFoundException {
@@ -59,7 +76,7 @@ public class LanguageDownloadWorker implements Runnable {
 		String fileFooter = ".json";
 		int pageNumber = from;
 		Token tok = this.tokens.getNextAuthenticToken("https://api.github.com/repositories");
-		HashSet<String> names = GithubLanguageDownloadMaster.names;
+	//	File namesFile = new File(namesFilePath);
 		while (pageNumber <= to) {
 			File repoFile = new File(fileHeader + pageNumber + fileFooter);
 			String content = FileIO.readFileContents(repoFile);
@@ -70,11 +87,13 @@ public class LanguageDownloadWorker implements Runnable {
 			for (int i = 0; i < size; i++) {
 				JsonObject repo = repos.get(i).getAsJsonObject();
 				String name = repo.get("full_name").getAsString();
+			//	FileIO.writeFileContents(namesFile, name + "/n", true);
 				if(names.contains(name)){
 				//	System.out.println("already processed " + name + " continuing");
 					names.remove(name);
 					continue;
 				}
+				// FileIO.writeFileContents(namesFile, name + "/n", true);
 				String langurl = this.language_url_header + name + this.language_url_footer;
 				if (tok.getNumberOfRemainingLimit() <= 0) {
 					tok = this.tokens.getNextAuthenticToken("https://api.github.com/repositories");
@@ -92,8 +111,8 @@ public class LanguageDownloadWorker implements Runnable {
 					tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());
 					tok.setResetTime(mc.getLimitResetTime());
 				} else {
-				//	final int responsecode = mc.getResponseCode();
-				//	System.err.println("authentication error " + responsecode);
+					final int responsecode = mc.getResponseCode();
+					System.err.println("authentication error " + responsecode);
 					mc = new MetadataCacher("https://api.github.com/repositories", tok.getUserName(), tok.getToken());
 					if (mc.authenticate()) { // if authenticate doesn't pass then token is exhausted.
 						tok.setnumberOfRemainingLimit(mc.getNumberOfRemainingLimit());
@@ -178,8 +197,6 @@ public class LanguageDownloadWorker implements Runnable {
 				System.out.println(Thread.currentThread().getId() + " other: " + other++);
 				this.otherrepos = new JsonArray();
 			}
-
-			// this.other++;
 		}
 	}
 

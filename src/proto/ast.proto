@@ -19,6 +19,7 @@ message Namespace {
 //	required PositionInfo position = 4;
 	repeated Statement statements = 5;
 	repeated Method methods = 6;
+	repeated Expression espresions = 7;
 }
 
 message Declaration {

@@ -1,7 +1,9 @@
 package boa.datagen.forges.github;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -54,10 +56,18 @@ public class GithubLanguageDownloadMaster {
         }else{
         	addNames(output +"/other");
         }
+        /*
+        try {
+			addNamesSingleFile(output+ "/names.txt");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		*/
     }
 
     //when recovering use -Xmx4024m to increase heap size 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         if (args.length < 3) {
             throw new IllegalArgumentException();
         }
@@ -65,7 +75,7 @@ public class GithubLanguageDownloadMaster {
         master.orchastrate(new File(master.repoNameDir).listFiles().length);
     }
 
-    public void orchastrate(int totalFies){
+    public void orchastrate(int totalFies) throws FileNotFoundException{
         int shareSize = totalFies/MAX_NUM_THREADS;
         int start = 0;
         int end = 0;
@@ -74,11 +84,11 @@ public class GithubLanguageDownloadMaster {
         for(i = 0; i < MAX_NUM_THREADS-1; i++){
             start = end + 1;
             end = start + shareSize;
-            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
+            LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end , i);
             new Thread(worker).start();
         }
         start = end + 1; end = totalFies;
-        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end);
+        LanguageDownloadWorker worker = new LanguageDownloadWorker(this.repoNameDir, this.langNameDir, tokens, start, end, i);
         new Thread(worker).start();
     }
 
@@ -86,15 +96,29 @@ public class GithubLanguageDownloadMaster {
     	System.out.println("adding " + filePath + " to names");
     	File dir = new File(filePath);
     	File[] files = dir.listFiles();
+    	String content;
+    	Gson parser = new Gson();
+    	JsonArray repos;
+    	JsonObject repo;
     	for(int i = 0; i < files.length; i++){
     		System.out.println("proccessing page " + files[i].getName());
-    		String content = FileIO.readFileContents(files[i]);
-			Gson parser = new Gson();
-			JsonArray repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
+    		content = FileIO.readFileContents(files[i]);
+			repos = parser.fromJson(content, JsonElement.class).getAsJsonArray();
 			for(JsonElement repoE: repos){
-				JsonObject repo = repoE.getAsJsonObject();
+				repo = repoE.getAsJsonObject();
 				names.add(repo.get("full_name").getAsString());
 			}
     	}
+    }
+    
+    public void addNamesSingleFile(String filePath) throws FileNotFoundException{
+    	File namesFile = new File(filePath);
+    	Scanner sc = new Scanner(namesFile);
+    	String name = "";
+    	while(sc.hasNext()){
+    		name = sc.next();
+    		names.add(name);
+    	}
+    	sc.close();
     }
 }
