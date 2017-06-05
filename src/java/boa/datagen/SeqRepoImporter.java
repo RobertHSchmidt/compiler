@@ -320,7 +320,6 @@ public class SeqRepoImporter {
 				}catch (org.eclipse.jgit.api.errors.JGitInternalException e) {
 					//e.printStackTrace();
 				}
-
 			}
 
 			if (debug)
