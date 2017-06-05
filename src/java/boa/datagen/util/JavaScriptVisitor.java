@@ -91,7 +91,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 
 	@Override
 	public boolean visit(JavaScriptUnit node) {
-//		b.setPosition(pos.build());
 		PackageDeclaration pkg = node.getPackage();
 		if (pkg == null) {
 			b.setName("");
@@ -139,7 +138,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration node) {
 		boa.types.Ast.Declaration.Builder b = boa.types.Ast.Declaration.newBuilder();
-//		b.setPosition(pos.build());
 		b.setName("");
 		b.setKind(boa.types.Ast.TypeKind.ANONYMOUS);
 		for (Object d : node.bodyDeclarations()) {
@@ -285,7 +283,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(org.eclipse.wst.jsdt.core.dom.Modifier node) {
 		boa.types.Ast.Modifier.Builder b = boa.types.Ast.Modifier.newBuilder();
-//		b.setPosition(pos.build());
 		if (node.isFinal())
 			b.setKind(boa.types.Ast.Modifier.ModifierKind.FINAL);
 		else if (node.isAbstract())
@@ -507,7 +504,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(FunctionInvocation node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.METHODCALL);
 		if(node.getName() != null)
 		b.setMethod(node.getName().getFullyQualifiedName());
@@ -533,7 +529,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ListExpression node){
 		boa.types.Ast.Expression.Builder bui = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		bui.setKind(boa.types.Ast.Expression.ExpressionKind.OTHER);		
 		for (Object a : node.expressions()) {
 			((org.eclipse.wst.jsdt.core.dom.Expression)a).accept(this);
@@ -545,7 +540,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	
 	public boolean visit(Name node){
 		boa.types.Ast.Expression.Builder bui = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		bui.setVariable(node.getFullyQualifiedName());
 		bui.setKind(boa.types.Ast.Expression.ExpressionKind.OTHER);		
 		((org.eclipse.wst.jsdt.core.dom.Expression)node).accept(this);
@@ -557,7 +551,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ExpressionStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.EXPRESSION);
 		node.getExpression().accept(this);
@@ -569,7 +562,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(WithStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.OTHER);
 		node.getExpression().accept(this);
@@ -584,7 +576,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TextElement node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.OTHER);
 		b.setLiteral(node.getText());
 		expressions.push(b.build());
@@ -594,7 +585,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ForStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.FOR);
 		for (Object e : node.initializers()) {
@@ -620,7 +610,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(IfStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.IF);
 		node.getExpression().accept(this);
@@ -644,7 +633,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(Initializer node) {
 		List<boa.types.Ast.Method> list = methods.peek();
 		Method.Builder b = Method.newBuilder();
-//		b.setPosition(pos.build());
 		b.setName("<clinit>");
 		for (Object m : node.modifiers()) {
 				((org.eclipse.wst.jsdt.core.dom.Modifier)m).accept(this);
@@ -667,7 +655,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(LabeledStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.LABEL);
 		statements.push(new ArrayList<boa.types.Ast.Statement>());
@@ -686,7 +673,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	public boolean visit(FunctionDeclaration node) {
 		List<boa.types.Ast.Method> list = methods.peek();
 		Method.Builder b = Method.newBuilder();
-		// b.setPosition(pos.build());
 		if (node.isConstructor())
 			b.setName("<init>");
 		else if (node.getName() != null)
@@ -750,7 +736,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ReturnStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.RETURN);
 		if (node.getExpression() != null) {
@@ -791,7 +776,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(SwitchCase node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.CASE);
 		if (node.getExpression() != null) {
@@ -805,7 +789,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(SwitchStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.SWITCH);
 		node.getExpression().accept(this);
@@ -822,7 +805,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ThrowStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.THROW);
 		node.getExpression().accept(this);
@@ -834,7 +816,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TryStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.TRY);
 		statements.push(new ArrayList<boa.types.Ast.Statement>());
@@ -852,7 +833,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TypeDeclarationStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.TYPEDECL);
 		declarations.push(new ArrayList<boa.types.Ast.Declaration>());
@@ -866,7 +846,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(VariableDeclarationStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.EXPRESSION);
 		boa.types.Ast.Expression.Builder eb = boa.types.Ast.Expression.newBuilder();
@@ -902,7 +881,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(WhileStatement node) {
 		boa.types.Ast.Statement.Builder b = boa.types.Ast.Statement.newBuilder();
-//		b.setPosition(pos.build());
 		List<boa.types.Ast.Statement> list = statements.peek();
 		b.setKind(boa.types.Ast.Statement.StatementKind.WHILE);
 		node.getExpression().accept(this);
@@ -921,7 +899,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ArrayAccess node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.ARRAYINDEX);
 		node.getArray().accept(this);
 		b.addExpressions(expressions.pop());
@@ -961,7 +938,7 @@ public class JavaScriptVisitor extends ASTVisitor {
 			if (expressions.empty()) {
 				boa.types.Ast.Expression.Builder eb = boa.types.Ast.Expression.newBuilder();
 				eb.setKind(boa.types.Ast.Expression.ExpressionKind.ANNOTATION);
-	//			eb.setAnnotation(modifiers.pop());
+				eb.setAnnotation(modifiers.pop());
 				b.addExpressions(eb.build());
 			} else {
 				b.addExpressions(expressions.pop());
@@ -974,7 +951,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(Assignment node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		node.getLeftHandSide().accept(this);
 		b.addExpressions(expressions.pop());
 		node.getRightHandSide().accept(this);
@@ -1010,7 +986,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(BooleanLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		if (node.booleanValue())
 			b.setLiteral("true");
@@ -1023,7 +998,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(CharacterLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral(node.getEscapedValue());
 		expressions.push(b.build());
@@ -1033,7 +1007,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ClassInstanceCreation node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.NEW);
 		boa.types.Ast.Type.Builder tb = boa.types.Ast.Type.newBuilder();
 		tb.setName(getIndex(typeName(node.getType())));
@@ -1066,7 +1039,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ConditionalExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.CONDITIONAL);
 		node.getExpression().accept(this);
 		b.addExpressions(expressions.pop());
@@ -1104,7 +1076,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(SimpleName node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.VARACCESS);
 		b.setVariable(node.getFullyQualifiedName());
 		expressions.push(b.build());
@@ -1114,7 +1085,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(QualifiedName node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.VARACCESS);
 		b.setVariable(node.getFullyQualifiedName());
 		expressions.push(b.build());
@@ -1124,7 +1094,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(InfixExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		if (node.getOperator() == InfixExpression.Operator.AND)
 			b.setKind(boa.types.Ast.Expression.ExpressionKind.BIT_AND);
 		else if (node.getOperator() == InfixExpression.Operator.CONDITIONAL_AND)
@@ -1192,7 +1161,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(InstanceofExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.TYPECOMPARE);
 		node.getLeftOperand().accept(this);
 		b.addExpressions(expressions.pop());
@@ -1207,7 +1175,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(NullLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral("null");
 		expressions.push(b.build());
@@ -1217,7 +1184,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ObjectLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral("object");
 		expressions.push(b.build());
@@ -1227,7 +1193,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ObjectLiteralField node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.OTHER);
 		node.getFieldName().accept(this);
 		b.addExpressions(expressions.pop());
@@ -1240,7 +1205,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(NumberLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral(node.getToken());
 		expressions.push(b.build());
@@ -1250,7 +1214,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ParenthesizedExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.PAREN);
 		node.getExpression().accept(this);
 		b.addExpressions(expressions.pop());
@@ -1261,7 +1224,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(PostfixExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		if (node.getOperator() == PostfixExpression.Operator.DECREMENT)
 			b.setKind(boa.types.Ast.Expression.ExpressionKind.OP_DEC);
 		else if (node.getOperator() == PostfixExpression.Operator.INCREMENT)
@@ -1285,7 +1247,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(PrefixExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		if (node.getOperator() == PrefixExpression.Operator.DECREMENT)
 			b.setKind(boa.types.Ast.Expression.ExpressionKind.OP_DEC);
 		else if (node.getOperator() == PrefixExpression.Operator.INCREMENT)
@@ -1307,7 +1268,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(org.eclipse.wst.jsdt.core.dom.StringLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral(node.getEscapedValue());
 		expressions.push(b.build());
@@ -1317,7 +1277,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(SuperFieldAccess node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.VARACCESS);
 		String name = "super." + node.getName().getFullyQualifiedName();
 		if (node.getQualifier() != null)
@@ -1330,7 +1289,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(SuperMethodInvocation node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.METHODCALL);
 		String name = "super." + node.getName().getFullyQualifiedName();
 		if (node.getQualifier() != null)
@@ -1353,7 +1311,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(ThisExpression node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		String name = "";
 		if (node.getQualifier() != null)
 			name += node.getQualifier().getFullyQualifiedName() + ".";
@@ -1366,7 +1323,6 @@ public class JavaScriptVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TypeLiteral node) {
 		boa.types.Ast.Expression.Builder b = boa.types.Ast.Expression.newBuilder();
-//		b.setPosition(pos.build());
 		b.setKind(boa.types.Ast.Expression.ExpressionKind.LITERAL);
 		b.setLiteral(typeName(node.getType()) + ".class");
 		expressions.push(b.build());

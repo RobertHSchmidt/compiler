@@ -76,6 +76,7 @@ public class MetadataCacher {
 		this.connection.setRequestProperty("Authorization", "Basic " + encodedAuthenStr);
 		try {
 			this.responseCode = this.connection.getResponseCode();
+			this.responseMessage = this.connection.getResponseMessage();
 			this.authenticated = (this.responseCode / 100 == 2);
 		} catch (IOException e) {
 			// considered as failed
@@ -158,5 +159,9 @@ public class MetadataCacher {
 	
 	public long getLimitResetTime() {
 		return Long.parseLong(this.connection.getHeaderField("X-RateLimit-Reset"));
+	}
+	
+	public String getResponseMsg() {
+		return this.responseMessage;
 	}
 }
